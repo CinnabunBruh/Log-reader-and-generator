@@ -1,0 +1,5 @@
+2026-11-15 12:30:45 | INFO | Server started
+2026-11-15 12:31:02 | WARNING | Disk space low
+2026-11-15 12:31:40 | ERROR | Connection lost
+2026-11-15 12:32:10 | DEBUG | User logged in
+2026-11-15 12:33:55 | ERROR | File not found
