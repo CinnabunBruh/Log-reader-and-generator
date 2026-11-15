@@ -73,3 +73,7 @@ Testing/
 *.exe
 *.o
 *.out
+out/
+build/
+.vs/
+CMakeSettings.json

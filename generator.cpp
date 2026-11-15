@@ -10,6 +10,10 @@
 #include <cstdlib>   // rand, srand
 #include <ctime>     // time
 #include <vector>    // vector - "розумний" масив
+#include <sstream>   // ostringstream - збирання рядка з частин
+#include <iomanip>   // setw, setfill - форматування чисел
+#define NOMINMAX      // щоб windows.h не ламав std::min / std::max
+#include <windows.h>  // SetConsoleOutputCP - налаштування кодування консолі Windows
 
 using namespace std;
 
@@ -28,21 +32,38 @@ const vector<string> MESSAGES = {
 // Повертає випадковий рядок з вектора.
 // Підказка: rand() % v.size() дає випадковий індекс від 0 до size-1.
 string randomFrom(const vector<string>& v) {
-    // TODO 1: поверни випадковий елемент вектора v
-    return v[0];  // тимчасова заглушка - заміни на випадковий вибір
+    if (v.empty()) {
+        return "";  // якщо вектор порожній, повертаємо порожній рядок
+    }
+    size_t index = rand() % v.size();
+    return v[index];
 }
 
 // Повертає випадковий час у форматі "YYYY-MM-DD HH:MM:SS".
 string randomTime() {
-    // TODO 2: згенеруй випадкові рік/місяць/день/години/хвилини/секунди.
-    // Підказки:
-    //  - місяць: rand() % 12 + 1, день: rand() % 28 + 1 (так простіше, ніж рахувати дні)
-    //  - щоб числа були з нулем попереду (05, а не 5), використай
-    //    to_string() і допиши "0" вручну, або <iomanip>: setw(2) << setfill('0')
-    return "2026-01-01 00:00:00";  // тимчасова заглушка
+    int year = 2026;
+    int month = 1 + rand() % 12;  // від 1 до 12
+    int day = 1 + rand() % 28;    // від 1 до 28
+    int hour = rand() % 24;       // від 0 до 23
+    int minute = rand() % 60;     // від 0 до 59
+    int second = rand() % 60;     // від 0 до 59
+
+    ostringstream result;
+    result << year << "-"
+           << setw(2) << setfill('0') << month << "-"
+           << setw(2) << setfill('0') << day << " "
+           << setw(2) << setfill('0') << hour << ":"
+           << setw(2) << setfill('0') << minute << ":"
+           << setw(2) << setfill('0') << second;
+
+    return result.str();  // перетворюємо потік у звичайний string
 }
 
 int main() {
+    // Кирилиця в консолі: вмикаємо UTF-8 для виводу і вводу.
+    SetConsoleOutputCP(CP_UTF8);
+    SetConsoleCP(CP_UTF8);
+
     srand(time(nullptr));  // "зерно" для rand(), щоб кожен запуск давав різні числа
 
     int count;
@@ -56,10 +77,12 @@ int main() {
         return 1;  // ненульовий код = помилка
     }
 
-    // TODO 3: у циклі від 0 до count запиши в file рядок формату
-    //   <time> | <level> | <message>
-    // Використай randomTime(), randomFrom(LEVELS), randomFrom(MESSAGES).
-    // Не забудь '\n' в кінці кожного рядка.
+    for (int i = 0; i < count; ++i) {
+        file << randomTime() << " | "
+            << randomFrom(LEVELS) << " | "
+            << randomFrom(MESSAGES) << '\n';
+    }
+
 
     file.close();
     cout << "Готово! Записано " << count << " рядків у log.txt\n";

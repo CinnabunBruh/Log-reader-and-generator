@@ -9,6 +9,8 @@
 #include <string>
 #include <vector>
 #include <algorithm>  // sort
+#define NOMINMAX      // щоб windows.h не ламав std::min / std::max
+#include <windows.h>  // SetConsoleOutputCP - налаштування кодування консолі Windows
 
 using namespace std;
 
@@ -76,6 +78,10 @@ void sortByMessage(vector<LogEntry>& entries) {
 }
 
 int main() {
+    // Кирилиця в консолі: вмикаємо UTF-8 для виводу і вводу.
+    SetConsoleOutputCP(CP_UTF8);
+    SetConsoleCP(CP_UTF8);
+
     vector<LogEntry> entries = readFile("log.txt");
     cout << "Прочитано записів: " << entries.size() << "\n";
 
